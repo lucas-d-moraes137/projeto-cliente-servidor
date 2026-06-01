@@ -1,15 +1,23 @@
 package com.grupoAura.projeto.controller;
 
-import com.grupoAura.projeto.entity.Paciente;
-import com.grupoAura.projeto.repository.PacienteRepository;
-import com.grupoAura.projeto.service.PacienteService;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.grupoAura.dto.PacienteDTO;
+import com.grupoAura.projeto.entity.Paciente;
+import com.grupoAura.projeto.repository.PacienteRepository;
+import com.grupoAura.projeto.service.PacienteService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/pacientes")
@@ -19,7 +27,7 @@ public class PacienteController {
     private PacienteRepository pacienteRepository;
 
     @Autowired
-    private PacienteService pacienteService;
+    private PacienteService pacienteService; // Injetando o Service
 
     @GetMapping
     public List<Paciente> listarTodos() {
@@ -29,13 +37,17 @@ public class PacienteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody Paciente paciente) {
+    public ResponseEntity<?> criar(@RequestBody @Valid PacienteDTO dto) {
         try {
-            // Chama o serviço para validar antes de salvar
+            Paciente paciente = new Paciente();
+            paciente.setNome(dto.getNome());
+            paciente.setCpf(dto.getCpf());
+            paciente.setTelefone(dto.getTelefone());
+
+            // CHAMANDO O SERVICE para rodar a validação de CPF duplicado!
             Paciente novoPaciente = pacienteService.salvarPaciente(paciente);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoPaciente);
         } catch (RuntimeException e) {
-            // Se o CPF for repetido, devolve o erro com texto explicativo
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

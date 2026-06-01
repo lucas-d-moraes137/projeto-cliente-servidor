@@ -1,9 +1,10 @@
 package com.grupoAura.projeto.service;
 
-import com.grupoAura.projeto.entity.Consulta;
-import com.grupoAura.projeto.repository.ConsultaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.grupoAura.projeto.entity.Consulta;
+import com.grupoAura.projeto.repository.ConsultaRepository;
 
 @Service
 @SuppressWarnings("null") // Isso desliga os avisos chatos de "Null type safety" do VS Code
@@ -24,4 +25,6 @@ public class ConsultaService {
         }
         consultaRepository.deleteById(id);
     }
+
+    
 }

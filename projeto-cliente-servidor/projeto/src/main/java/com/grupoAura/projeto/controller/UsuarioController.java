@@ -1,15 +1,24 @@
 package com.grupoAura.projeto.controller;
 
-import com.grupoAura.projeto.entity.Usuario;
-import com.grupoAura.projeto.repository.UsuarioRepository;
-import com.grupoAura.projeto.service.UsuarioService;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.grupoAura.dto.UsuarioDTO;
+import com.grupoAura.projeto.entity.Usuario;
+import com.grupoAura.projeto.repository.UsuarioRepository;
+import com.grupoAura.projeto.service.UsuarioService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -29,8 +38,13 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criar(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> criar(@RequestBody @Valid UsuarioDTO dto) {
         try {
+            Usuario usuario = new Usuario();
+            usuario.setNome(dto.getNome());
+            usuario.setEmail(dto.getEmail());
+            usuario.setSenha(dto.getSenha());
+
             Usuario novoUsuario = usuarioService.salvarUsuario(usuario);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoUsuario);
         } catch (RuntimeException e) {
@@ -38,7 +52,6 @@ public class UsuarioController {
         }
     }
 
-    // RN 5: Rota que o Swagger vai usar para testar o Login recebendo email e senha
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String email, @RequestParam String senha) {
         try {

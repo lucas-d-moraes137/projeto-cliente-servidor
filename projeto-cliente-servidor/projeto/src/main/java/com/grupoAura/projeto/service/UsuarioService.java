@@ -1,9 +1,10 @@
 package com.grupoAura.projeto.service;
 
-import com.grupoAura.projeto.entity.Usuario;
-import com.grupoAura.projeto.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.grupoAura.projeto.entity.Usuario;
+import com.grupoAura.projeto.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
