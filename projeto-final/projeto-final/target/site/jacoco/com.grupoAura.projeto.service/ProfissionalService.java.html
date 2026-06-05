@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProfissionalService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">projeto</a> &gt; <a href="index.source.html" class="el_package">com.grupoAura.projeto.service</a> &gt; <span class="el_source">ProfissionalService.java</span></div><h1>ProfissionalService.java</h1><pre class="source lang-java linenums">package com.grupoAura.projeto.service;
+
+import com.grupoAura.projeto.dto.ProfissionalRequestDTO;
+import com.grupoAura.projeto.dto.ProfissionalResponseDTO;
+import com.grupoAura.projeto.entity.Profissional;
+import com.grupoAura.projeto.exception.BusinessConflictException;
+import com.grupoAura.projeto.exception.ResourceNotFoundException;
+import com.grupoAura.projeto.repository.ProfissionalRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class ProfissionalService {
+
+    private final ProfissionalRepository profissionalRepository;
+
+<span class="fc" id="L19">    public ProfissionalService(ProfissionalRepository profissionalRepository) {</span>
+<span class="fc" id="L20">        this.profissionalRepository = profissionalRepository;</span>
+<span class="fc" id="L21">    }</span>
+
+    @Transactional(readOnly = true)
+    public List&lt;ProfissionalResponseDTO&gt; listarTodos() {
+<span class="nc" id="L25">        return profissionalRepository.findAll()</span>
+<span class="nc" id="L26">                .stream()</span>
+<span class="nc" id="L27">                .map(ProfissionalResponseDTO::from)</span>
+<span class="nc" id="L28">                .toList();</span>
+    }
+
+    @Transactional(readOnly = true)
+    public ProfissionalResponseDTO buscarPorId(Long id) {
+<span class="pc" id="L33">        return profissionalRepository.findById(id)</span>
+<span class="fc" id="L34">                .map(ProfissionalResponseDTO::from)</span>
+<span class="pc" id="L35">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Profissional&quot;, id));</span>
+    }
+
+    @Transactional
+    public ProfissionalResponseDTO salvarProfissional(ProfissionalRequestDTO dto) {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (profissionalRepository.existsByCpf(dto.cpf())) {</span>
+<span class="fc" id="L41">            throw new BusinessConflictException(&quot;Já existe um profissional cadastrado com este CPF!&quot;);</span>
+        }
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (profissionalRepository.existsByCrm(dto.crm())) {</span>
+<span class="fc" id="L44">            throw new BusinessConflictException(&quot;Já existe um profissional cadastrado com este CRM!&quot;);</span>
+        }
+
+<span class="fc" id="L47">        Profissional p = new Profissional();</span>
+        // Campos herdados de Usuario
+<span class="fc" id="L49">        p.setNome(dto.nome());</span>
+<span class="fc" id="L50">        p.setEmail(dto.email());</span>
+<span class="fc" id="L51">        p.setSenha(dto.senha());</span>
+<span class="fc" id="L52">        p.setCpf(dto.cpf());</span>
+        // Campos próprios de Profissional
+<span class="fc" id="L54">        p.setEspecialidade(dto.especialidade());</span>
+<span class="fc" id="L55">        p.setCrm(dto.crm());</span>
+
+<span class="fc" id="L57">        return ProfissionalResponseDTO.from(profissionalRepository.save(p));</span>
+    }
+
+    @Transactional
+    public ProfissionalResponseDTO atualizar(Long id, ProfissionalRequestDTO dto) {
+<span class="nc" id="L62">        Profissional atual = profissionalRepository.findById(id)</span>
+<span class="nc" id="L63">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Profissional&quot;, id));</span>
+
+        // Campos herdados de Usuario (atualizáveis)
+<span class="nc" id="L66">        atual.setNome(dto.nome());</span>
+<span class="nc" id="L67">        atual.setEmail(dto.email());</span>
+<span class="nc" id="L68">        atual.setSenha(dto.senha());</span>
+        // CPF e CRM não são atualizados — campos imutáveis por regra de negócio
+        // Campo próprio de Profissional
+<span class="nc" id="L71">        atual.setEspecialidade(dto.especialidade());</span>
+
+<span class="nc" id="L73">        return ProfissionalResponseDTO.from(profissionalRepository.save(atual));</span>
+    }
+
+    @Transactional
+    public void deletar(Long id) {
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (!profissionalRepository.existsById(id)) {</span>
+<span class="nc" id="L79">            throw new ResourceNotFoundException(&quot;Profissional&quot;, id);</span>
+        }
+<span class="nc" id="L81">        profissionalRepository.deleteById(id);</span>
+<span class="nc" id="L82">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

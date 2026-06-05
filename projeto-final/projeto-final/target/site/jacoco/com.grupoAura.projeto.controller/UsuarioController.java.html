@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UsuarioController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">projeto</a> &gt; <a href="index.source.html" class="el_package">com.grupoAura.projeto.controller</a> &gt; <span class="el_source">UsuarioController.java</span></div><h1>UsuarioController.java</h1><pre class="source lang-java linenums">package com.grupoAura.projeto.controller;
+
+import com.grupoAura.projeto.dto.UsuarioRequestDTO;
+import com.grupoAura.projeto.dto.UsuarioResponseDTO;
+import com.grupoAura.projeto.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/usuarios&quot;)
+@Tag(name = &quot;Usuários&quot;, description = &quot;Operações de autenticação e gerenciamento de usuários&quot;)
+public class UsuarioController {
+
+    private final UsuarioService usuarioService;
+
+<span class="fc" id="L24">    public UsuarioController(UsuarioService usuarioService) {</span>
+<span class="fc" id="L25">        this.usuarioService = usuarioService;</span>
+<span class="fc" id="L26">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;Lista todos os usuários&quot;)
+    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista retornada com sucesso&quot;)
+    public ResponseEntity&lt;List&lt;UsuarioResponseDTO&gt;&gt; listarTodos() {
+<span class="fc" id="L32">        return ResponseEntity.ok(usuarioService.listarTodos());</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Cadastra um novo usuário&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Usuário criado com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Dados inválidos&quot;),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;E-mail já cadastrado&quot;)
+    })
+    public ResponseEntity&lt;UsuarioResponseDTO&gt; criar(@Valid @RequestBody UsuarioRequestDTO dto) {
+<span class="fc" id="L43">        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.salvarUsuario(dto));</span>
+    }
+
+    @PostMapping(&quot;/login&quot;)
+    @Operation(summary = &quot;Realiza login com e-mail e senha&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Login realizado com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;401&quot;, description = &quot;Credenciais inválidas&quot;)
+    })
+    public ResponseEntity&lt;String&gt; login(@RequestParam String email, @RequestParam String senha) {
+<span class="fc" id="L53">        UsuarioResponseDTO usuario = usuarioService.fazerLogin(email, senha);</span>
+<span class="fc" id="L54">        return ResponseEntity.ok(&quot;Login realizado com sucesso! Bem-vindo, &quot; + usuario.nome());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

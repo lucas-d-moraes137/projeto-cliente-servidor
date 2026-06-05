@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PacienteController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">projeto</a> &gt; <a href="index.source.html" class="el_package">com.grupoAura.projeto.controller</a> &gt; <span class="el_source">PacienteController.java</span></div><h1>PacienteController.java</h1><pre class="source lang-java linenums">package com.grupoAura.projeto.controller;
+
+import com.grupoAura.projeto.dto.PacienteRequestDTO;
+import com.grupoAura.projeto.dto.PacienteResponseDTO;
+import com.grupoAura.projeto.service.PacienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping(&quot;/pacientes&quot;)
+@Tag(name = &quot;Pacientes&quot;, description = &quot;Operações de gerenciamento de pacientes&quot;)
+public class PacienteController {
+
+    private final PacienteService pacienteService;
+
+<span class="fc" id="L24">    public PacienteController(PacienteService pacienteService) {</span>
+<span class="fc" id="L25">        this.pacienteService = pacienteService;</span>
+<span class="fc" id="L26">    }</span>
+
+    @GetMapping
+    @Operation(summary = &quot;Lista todos os pacientes&quot;)
+    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Lista retornada com sucesso&quot;)
+    public ResponseEntity&lt;List&lt;PacienteResponseDTO&gt;&gt; listarTodos() {
+<span class="fc" id="L32">        return ResponseEntity.ok(pacienteService.listarTodos());</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Busca paciente por ID&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Paciente encontrado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Paciente não encontrado&quot;)
+    })
+    public ResponseEntity&lt;PacienteResponseDTO&gt; buscarPorId(@PathVariable Long id) {
+<span class="nc" id="L42">        return ResponseEntity.ok(pacienteService.buscarPorId(id));</span>
+    }
+
+    @PostMapping
+    @Operation(summary = &quot;Cadastra um novo paciente&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;201&quot;, description = &quot;Paciente criado com sucesso&quot;),
+            @ApiResponse(responseCode = &quot;400&quot;, description = &quot;Dados inválidos&quot;),
+            @ApiResponse(responseCode = &quot;409&quot;, description = &quot;CPF já cadastrado&quot;)
+    })
+    public ResponseEntity&lt;PacienteResponseDTO&gt; criar(@Valid @RequestBody PacienteRequestDTO dto) {
+<span class="fc" id="L53">        return ResponseEntity.status(HttpStatus.CREATED).body(pacienteService.salvarPaciente(dto));</span>
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Atualiza dados de um paciente&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Paciente atualizado&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Paciente não encontrado&quot;)
+    })
+    public ResponseEntity&lt;PacienteResponseDTO&gt; atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody PacienteRequestDTO dto) {
+<span class="nc" id="L65">        return ResponseEntity.ok(pacienteService.atualizar(id, dto));</span>
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    @Operation(summary = &quot;Remove um paciente&quot;)
+    @ApiResponses({
+            @ApiResponse(responseCode = &quot;204&quot;, description = &quot;Paciente removido&quot;),
+            @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Paciente não encontrado&quot;)
+    })
+    public ResponseEntity&lt;Void&gt; deletar(@PathVariable Long id) {
+<span class="fc" id="L75">        pacienteService.deletar(id);</span>
+<span class="fc" id="L76">        return ResponseEntity.noContent().build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

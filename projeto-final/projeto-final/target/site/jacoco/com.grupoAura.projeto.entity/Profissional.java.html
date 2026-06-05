@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Profissional.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">projeto</a> &gt; <a href="index.source.html" class="el_package">com.grupoAura.projeto.entity</a> &gt; <span class="el_source">Profissional.java</span></div><h1>Profissional.java</h1><pre class="source lang-java linenums">package com.grupoAura.projeto.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = &quot;profissionais&quot;)
+@DiscriminatorValue(&quot;PROFISSIONAL&quot;)
+public class Profissional extends Usuario {
+
+    @Column(nullable = false, length = 80)
+    private String especialidade;
+
+    @Column(nullable = false, unique = true, length = 20)
+    private String crm;
+
+<span class="fc" id="L16">    public Profissional() {}</span>
+
+    public Profissional(Long id, String nome, String email, String senha, String cpf,
+                        String especialidade, String crm) {
+<span class="fc" id="L20">        super(id, nome, email, senha, cpf);</span>
+<span class="fc" id="L21">        this.especialidade = especialidade;</span>
+<span class="fc" id="L22">        this.crm = crm;</span>
+<span class="fc" id="L23">    }</span>
+
+<span class="fc" id="L25">    public String getEspecialidade()                     { return especialidade; }</span>
+<span class="fc" id="L26">    public String getCrm()                               { return crm; }</span>
+<span class="fc" id="L27">    public void setEspecialidade(String especialidade)   { this.especialidade = especialidade; }</span>
+<span class="fc" id="L28">    public void setCrm(String crm)                       { this.crm = crm; }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
